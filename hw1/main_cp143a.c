@@ -36,9 +36,8 @@ int main(int argc, char **argv) {
 	int s_buf = 4096;
 	char buf[s_buf];
 	int size = 0;
-	while( (size = read(f_src, buf, s_buf)) ) {
+	while( (size = read(f_src, buf, s_buf)) )
 		write(f_dst, buf, size);
-	}
 
 	close(f_src);
 	close(f_dst);
