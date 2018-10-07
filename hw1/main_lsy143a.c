@@ -9,10 +9,33 @@
 #include <sys/wait.h>
 
 int main(int argc, char **argv) {
-	if(argc != 1)
+	if(argc != 2)
 		exit(1);
 
+	char *dst = argv[1];
+
+	int open_flag = O_WRONLY | O_CREAT;
+	int perm_flag = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH;
+
+	close(1);
+
+	int f_dst = open(dst, open_flag, perm_flag);
+	if(f_dst == -1) {
+		printf("Error opening: %s.\n", dst);
+		exit(1);
+	}
 	
+	int pid = fork();
+	if(!pid) {
+		execv("/bin/ls", argv + 1);
+	} else if(pid == -1) {
+		printf("Fork error\n");
+	} else {
+		wait(&pid);
+		close(f_dst);		
+	}
+	
+
 
 	exit(0);
 }

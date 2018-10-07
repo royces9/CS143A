@@ -1,18 +1,19 @@
 CC = gcc
-CFLAGS = -MMD -Wall -g
+CFLAGS = -Wall -g
+
+all: main_cp143a main_lsy143a
 
 main_cp143a: main_cp143a.c
-	$(CC) $(CFLAGS) main_cp143a.c -o main_cp143a
+	$(CC) $(CFLAGS) $@.c -o $@
+
+main_lsy143a: main_lsy143a.c
+	$(CC) $(CFLAGS) $@.c -o $@
+
 
 # SRC = $(wildcard *.c)
-# OBJ = $(SRC.c=.o)
-
 # EXE = $(SRC:.c=)
 
 # all: $(EXE)
 
-# $(EXE): $(OBJ)
-# 	$(CC) $@.o -o $@
-
-# %.o: %.c
-# 	$(CC) $(CFLAGS) -c $< -o $@
+# $(EXE): $(SRC)
+# 	$(CC) $(CFLAGS) $@.c -o $@
