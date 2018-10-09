@@ -17,7 +17,10 @@ void exec_fun(char *com, char *args[], int *out) {
 		exit(1);
 	}
 
+	//save read end of pipe
 	int tempfid = dup(fid[0]);
+
+	//set write end to 1, or if something else is declared
 	if(!out) {
 		dup2(fid[1], 1);
 	} else {
@@ -33,7 +36,10 @@ void exec_fun(char *com, char *args[], int *out) {
 		wait(&pid);
 	}
 
+	//close the write end
 	close(fid[1]);
+
+	//set the read end to 0
 	dup2(tempfid, 0);
 }
 
