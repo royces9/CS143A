@@ -10,8 +10,8 @@
 
 
 void exec_fun(char *com, char *args[], int *out) {
-	int fid[2];
 
+	int fid[2];
 	if( pipe(fid) ) {
 		printf("Pipe error.\n");
 		exit(1);
@@ -45,11 +45,14 @@ void exec_fun(char *com, char *args[], int *out) {
 
 
 int main(int argc, char **argv) {
+#if 0
 	if(argc != 2)
 		exit(1);
 
 	char *dst = argv[1];
-
+#else
+	char *dst = "main";
+#endif
 	//close stdin/out
 	int stdout_copy = dup(1);
 	close(0);

@@ -9,12 +9,15 @@
 #include <sys/wait.h>
 
 int main(int argc, char **argv) {
+#if 0
 	if(argc != 2)
 		exit(1);
 
 	//destination file name
 	char *dst = argv[1];
-
+#else
+	char *dst = "main-out.c";
+#endif
 	//open flag for write and create
 	int open_flag = O_WRONLY | O_CREAT;
 
@@ -33,7 +36,7 @@ int main(int argc, char **argv) {
 	
 	int pid = fork();
 	if(!pid) {
-		execv("/bin/ls", argv + 1);
+		execv("/bin/ls", (char *[]) {"ls", 0});
 	} else if(pid == -1) {
 		printf("Fork error.\n");
 	} else {
