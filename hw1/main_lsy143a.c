@@ -12,13 +12,19 @@ int main(int argc, char **argv) {
 	if(argc != 2)
 		exit(1);
 
+	//destination file name
 	char *dst = argv[1];
 
+	//open flag for write and create
 	int open_flag = O_WRONLY | O_CREAT;
+
+	//write and read permissions for user/group/other
 	int perm_flag = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH;
 
+	//close stdout
 	close(1);
 
+	//open the file from argument list
 	int f_dst = open(dst, open_flag, perm_flag);
 	if(f_dst == -1) {
 		printf("Error opening: %s.\n", dst);
@@ -29,7 +35,7 @@ int main(int argc, char **argv) {
 	if(!pid) {
 		execv("/bin/ls", argv + 1);
 	} else if(pid == -1) {
-		printf("Fork error\n");
+		printf("Fork error.\n");
 	} else {
 		wait(&pid);
 	}
