@@ -32,10 +32,8 @@ int main(int argc, char **argv) {
 		printf("Fork error\n");
 	} else {
 		wait(&pid);
-		close(f_dst);		
 	}
-	
 
-
+	close(f_dst);
 	exit(0);
 }
