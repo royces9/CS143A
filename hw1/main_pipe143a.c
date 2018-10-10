@@ -10,14 +10,17 @@
 
 
 void exec_fun(char *com, char *args[], int *out) {
-	int fid[2];
 
+	int fid[2];
 	if( pipe(fid) ) {
 		printf("Pipe error.\n");
 		exit(1);
 	}
 
+	//save read end of pipe
 	int tempfid = dup(fid[0]);
+
+	//set write end to 1, or if something else is declared
 	if(!out) {
 		dup2(fid[1], 1);
 	} else {
@@ -33,17 +36,23 @@ void exec_fun(char *com, char *args[], int *out) {
 		wait(&pid);
 	}
 
+	//close the write end
 	close(fid[1]);
+
+	//set the read end to 0
 	dup2(tempfid, 0);
 }
 
 
 int main(int argc, char **argv) {
+#if 0
 	if(argc != 2)
 		exit(1);
 
 	char *dst = argv[1];
-
+#else
+	char *dst = "main";
+#endif
 	//close stdin/out
 	int stdout_copy = dup(1);
 	close(0);
