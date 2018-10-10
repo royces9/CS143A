@@ -7,7 +7,7 @@ EXE = $(SRC:.c=)
 all: $(EXE)
 
 $(EXE): $(SRC)
-	$(CC) $(CFLAGS) $@.c -o $@
+	$(CC) $(CFLAGS) $< -o $@
 
 .PHONY: clean
 clean:
