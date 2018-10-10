@@ -40,6 +40,32 @@ struct pipecmd {
 int fork1(void);  // Fork but exits on failure.
 struct cmd *parsecmd(char*);
 
+void printcmd(struct cmd *a) {
+	struct execcmd *ecmd;
+	struct pipecmd *pcmd;
+	struct redircmd *rcmd;
+
+	printf("type: %d: ", a->type);
+	switch(a->type) {
+	case ' ':
+		ecmd = (struct execcmd *) a;
+		printf("%s\n", ecmd->argv[0]);
+		break;
+		
+	case '>':
+	case '<':
+		rcmd = (struct redircmd *) a;
+		printcmd(rcmd->cmd);
+		break;
+	case '|':
+		pcmd = (struct pipecmd *) a;
+		printf("left: ");
+		printcmd(pcmd->left);
+		printf("right: ");
+		printcmd(pcmd->right);
+	}
+	printf("\n");
+}
 
 // Execute cmd.  Never returns.
 void
@@ -52,7 +78,8 @@ runcmd(struct cmd *cmd)
 
   if(cmd == 0)
     exit(0);
-  
+
+  //printcmd(cmd);  
   switch(cmd->type){
   default:
     fprintf(stderr, "unknown runcmd\n");
@@ -84,6 +111,7 @@ runcmd(struct cmd *cmd)
     //duplicate new file to the fd in struct
     dup2(fid, rcmd->fd);
     int std_set = 0;
+
     //change stdin/out to the file
     if(rcmd->type == '<') {
 	    std_set = 0;
@@ -94,28 +122,34 @@ runcmd(struct cmd *cmd)
 	    exit(1);
     }
 
-    int std_copy = dup(std_set);
+    //set either stdout or in to the file
     dup2(rcmd->fd, std_set);
+
     //
     runcmd(rcmd->cmd);
     break;
 
   case '|':
     pcmd = (struct pipecmd*)cmd;
-    printf("%d %d\n", pcmd->left->type, pcmd->right->type);
+
     //fprintf(stderr, "pipe not implemented\n");
 
     //mystuff
-    int stdin_copy = dup(0);
+
+    //make copy of stdout
     int stdout_copy = dup(1);
-    close(0);
-    close(1);
+
+    //pipe
     int pipe_fid[2];
     if( pipe(pipe_fid) ) {
 	    fprintf(stderr, "Pipe error.\n");
 	    exit(1);
     }
 
+    //set write end of pipe to stdout
+    dup2(pipe_fid[1], 1);
+
+    //fork process, recursive call
     int pid = fork();
     if(!pid) {
 	    runcmd(pcmd->left);
@@ -125,21 +159,16 @@ runcmd(struct cmd *cmd)
 	    wait(&pid);
     }
 
+    //close write end of pipe
     close(pipe_fid[1]);
+
+    //reset the original stdout to 1
     dup2(stdout_copy, 1);
 
-    pid = fork();
-    if(!pid) {
-	    runcmd(pcmd->right);
-    } else if(pid == -1) {
-	    fprintf(stderr, "Fork error.\n");
-    } else {
-	    wait(&pid);
-    }
-    stdout_copy = dup(1);
-    close(1);
+    //change the read end of pipe to stdin
+    dup2(pipe_fid[0], 0);
 
-    dup2(stdout_copy, 1);
+    runcmd(pcmd->right);
     //
     break;
   }    
