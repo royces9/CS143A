@@ -16,7 +16,7 @@ int main(int argc, char **argv) {
 	//destination file name
 	char *dst = argv[1];
 #else
-	char *dst = "main-out.c";
+	char *dst = "y";
 #endif
 	//open flag for write and create
 	int open_flag = O_WRONLY | O_CREAT;
