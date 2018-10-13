@@ -55,8 +55,6 @@ int main(int argc, char **argv) {
 #endif
 	//close stdin/out
 	int stdout_copy = dup(1);
-	close(0);
-	close(1);
 
 	exec_fun("/bin/ls", (char *[]) {"ls", 0}, NULL);
 	exec_fun("/bin/grep", (char *[]) {"grep", dst, 0}, NULL);
