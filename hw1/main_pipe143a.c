@@ -58,25 +58,10 @@ int main(int argc, char **argv) {
 	close(0);
 	close(1);
 
-	/*
+
 	exec_fun("ls", (char *[]) {"ls", 0}, NULL);
 	exec_fun("grep", (char *[]) {"grep", dst, 0}, NULL);
 	exec_fun("wc", (char *[]) {"wc", 0}, &stdout_copy);
-*/
-	char *ls = "ls";
-	char *grep = "grep";
-	char *wc = "wc";
-
-	char *lss[] = {ls, NULL};
-	char *grepp[] = {grep, dst, NULL};
-	char *wcc[] = {wc, NULL};
-
-	char **test[] = {lss, grepp, wcc};
-	//char **test[] = {(char *[]) {"ls", NULL}, (char *[]) {"grep", dst, NULL}, (char *[]) {"wc", 0}};
-	int *outs[] = {NULL, NULL, &stdout_copy};
-
-	for(int i = 0; i < 3; ++i)
-		exec_fun(test[i][0], test[i], outs[i]);
 
 	exit(0);
 }
