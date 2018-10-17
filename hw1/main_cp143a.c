@@ -9,8 +9,10 @@
 #include <sys/wait.h>
 
 int main(int argc, char **argv) {
-	if(argc != 3)
+	if(argc != 3) {
+		printf("Incorrect number of inputs.");
 		exit(1);
+	}
 
 	char *src = argv[1];
 	char *dst = argv[2];
