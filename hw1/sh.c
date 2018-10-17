@@ -131,9 +131,6 @@ runcmd(struct cmd *cmd)
 
 	case '|':
 		pcmd = (struct pipecmd*)cmd;
-
-		//fprintf(stderr, "pipe not implemented\n");
-
 		//mystuff
 
 		//make copy of stdout
