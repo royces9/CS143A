@@ -10,7 +10,6 @@
 
 
 void exec_fun(char *com, char *args[], int *out) {
-
 	int fid[2];
 	if( pipe(fid) ) {
 		printf("Pipe error.\n");
