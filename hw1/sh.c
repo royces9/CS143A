@@ -153,7 +153,7 @@ runcmd(struct cmd *cmd)
 		} else if(pid == -1) {
 			fprintf(stderr, "Fork error.\n");
 		} else {
-			wait(&pid);
+			//wait(&pid);
 		}
 
 		//close write end of pipe
