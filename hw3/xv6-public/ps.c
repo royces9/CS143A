@@ -17,7 +17,8 @@ void print_proc(struct uproc *uproc) {
 int main(int argc, char **argv) {
   struct uproc uproc;
   printf(1, "PID NAME\n");
-  for(int i = 0; i < NPROC; ++i) {
+int i = 0;  
+for(; i < NPROC; ++i) {
     if(getprocinfo(i, &uproc) < 0)
       exit();
 

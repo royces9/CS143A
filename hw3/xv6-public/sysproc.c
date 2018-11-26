@@ -94,6 +94,7 @@ sys_uptime(void)
 int sys_backtrace(void) {
   struct proc *proc = myproc();
 
+  cprintf("Registers\n");
   cprintf("eax: %p\n", proc->tf->eax);
   cprintf("ebx: %p\n", proc->tf->ebx);
   cprintf("ecx: %p\n", proc->tf->ecx);
@@ -103,11 +104,17 @@ int sys_backtrace(void) {
   cprintf("esi: %p\n", proc->tf->esi);
   cprintf("ebp: %p\n", proc->tf->ebp);
   cprintf("esp: %p\n", proc->tf->esp);
-  cprintf("eip: %p\n", proc->tf->eip);
+  cprintf("eip: %p\n\n", proc->tf->eip);
 
-
+  cprintf("Stack\n");
+  //top of user stack
   uint *pp = (uint *)proc->tf->ebp;
+
+  //top of kernel stack
   register int ebp asm("ebp");
+
+  //comment this if you wanna 
+  //only have user stack
   pp = (uint *)ebp;
   int j = 0;
 
@@ -139,7 +146,8 @@ int sys_getprocinfo(void) {
   uproc->parent_pid = proc.parent->pid;
   uproc->killed = proc.killed;
 
-  for(int i = 0; i < 16; ++i)
+int i = 0;
+  for(; i < 16; ++i)
     uproc->name[i] = proc.name[i];
 
   return 0;
