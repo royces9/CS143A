@@ -95,33 +95,45 @@ int sys_backtrace(void) {
   struct proc *proc = myproc();
 
   cprintf("Registers\n");
-  cprintf("eax: %p\n", proc->tf->eax);
-  cprintf("ebx: %p\n", proc->tf->ebx);
-  cprintf("ecx: %p\n", proc->tf->ecx);
-  cprintf("edx: %p\n", proc->tf->edx);
+  cprintf("eax: 0x%p\n", proc->tf->eax);
+  cprintf("ebx: 0x%p\n", proc->tf->ebx);
+  cprintf("ecx: 0x%p\n", proc->tf->ecx);
+  cprintf("edx: 0x%p\n", proc->tf->edx);
     
-  cprintf("edi: %p\n", proc->tf->edi);
-  cprintf("esi: %p\n", proc->tf->esi);
-  cprintf("ebp: %p\n", proc->tf->ebp);
-  cprintf("esp: %p\n", proc->tf->esp);
-  cprintf("eip: %p\n\n", proc->tf->eip);
+  cprintf("edi: 0x%p\n", proc->tf->edi);
+  cprintf("esi: 0x%p\n", proc->tf->esi);
+  cprintf("ebp: 0x%p\n", proc->tf->ebp);
+  cprintf("esp: 0x%p\n", proc->tf->esp);
+  cprintf("eip: 0x%p\n\n", proc->tf->eip);
 
-  cprintf("Stack\n");
+  cprintf("Return Addresses\n");
   //top of user stack
-  uint *pp = (uint *)proc->tf->ebp;
+  //uint *pp = (uint *)proc->tf->ebp;
+  uint *pp = 0;
 
   //top of kernel stack
-  register int ebp asm("ebp");
+  register uint ebp asm("ebp");
 
-  //comment this if you wanna 
-  //only have user stack
+  //address where stack starts
+  uint lower = (ebp / 4096) * (ebp + 1);
+
   pp = (uint *)ebp;
   int j = 0;
+
+  cprintf("Kernel Stack\n");
+
+  for(;pp > (uint *)lower;
+      pp = *(uint **)pp, ++j) {
+    cprintf("%d: 0x%p\n", j, *(pp + 1));
+  }
+
+  cprintf("User Stack\n");
 
   for(;*(pp + 1) != 0xFFFFFFFF;
       pp = *(uint **)pp, ++j) {
     cprintf("%d: 0x%p\n", j, *(pp + 1));
   }
+
   cprintf("%d: 0x%p\n", j, *(pp + 1));
 
   return 0;
