@@ -54,7 +54,7 @@ endif
 # QEMU = qemu-system-i386
 
 #MY SHIT
-QEMU = /home/royce/Documents/School/CS143A/qemu-install/bin/qemu-system-i386
+#QEMU = /home/royce/Documents/School/CS143A/qemu-install/bin/qemu-system-i386
 #QEMU = /home/rrsato/CS143a/qemu-install/bin/qemu-system-i386
 
 # Try to infer the correct QEMU

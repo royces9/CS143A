@@ -112,12 +112,14 @@ int sys_backtrace(void) {
   //uint *pp = (uint *)proc->tf->ebp;
   uint *pp = 0;
 
+  uint esp = proc->tf->esp;
+
   //top of kernel stack
   register uint ebp asm("ebp");
 
   //address where stack starts
-  uint lower = (ebp / 4096) * (ebp + 1);
-
+  uint lower = (uint)(ebp / 4096) * 4096;
+  cprintf("%p\n", lower);
   pp = (uint *)ebp;
   int j = 0;
 
@@ -136,6 +138,11 @@ int sys_backtrace(void) {
   }
 
   cprintf("%d: 0x%p\n", j, *(pp + 1));
+
+  for(;*(uint *)esp != 0xFFFFFFFF; esp+=4) {
+  //for(;esp > 0x2000; esp+=4) {
+    cprintf("0x%p: 0x%p\n", esp, *(uint *)esp);
+  }
 
   return 0;
 }

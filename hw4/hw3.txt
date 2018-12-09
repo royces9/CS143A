@@ -1,4 +1,0 @@
--Unwinded stack inside the kernel
-
--implemented ps
- -only printed what bash ps does, but uproc has other stuff too

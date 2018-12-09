@@ -2,12 +2,33 @@
 #include "stat.h"
 #include "user.h"
 
+#define SPIN
+
+#ifdef SPIN
+#include "thread_spinlock.h"
+struct thread_spinlock lock;
+#define THREAD_INIT thread_spin_init
+#define THREAD_LOCK thread_spin_lock
+#define THREAD_UNLOCK thread_spin_unlock
+#endif
+
+
+#ifdef MUTEX
+#include "thread_mutex.h"
+struct thread_mutex lock;
+#define THREAD_INIT thread_mutex_init
+#define THREAD_LOCK thread_mutex_lock
+#define THREAD_UNLOCK thread_mutex_unlock
+#endif
+
+
 struct balance {
   char name[32];
   int amount;
 };
 
 volatile int total_balance = 0;
+
 
 volatile unsigned int delay (unsigned int d) {
   unsigned int i;
@@ -27,14 +48,14 @@ void do_work(void *arg){
   printf(1, "Starting do_work: s:%s\n", b->name);
 
   for (i = 0; i < b->amount; i++) {
-    //thread_spin_lock(&lock);
+    THREAD_LOCK(&lock);
     old = total_balance;
     delay(100000);
     total_balance = old + 1;
-    //thread_spin_unlock(&lock);
+    THREAD_UNLOCK(&lock);
   }
 
-  printf(1, "Done s:%x\n", b->name);
+  printf(1, "Done s:%s\n", b->name);
 
   thread_exit();
   return;
@@ -48,6 +69,8 @@ int main(int argc, char *argv[]) {
 
   void *s1, *s2;
   int t1, t2, r1, r2;
+
+  THREAD_INIT(&lock);
 
   s1 = malloc(4096);
   s2 = malloc(4096);

@@ -592,7 +592,6 @@ found:
 
 int thread_create(void (*fcn)(void *), void *arg, void *stack) {
   struct proc *cur = myproc();
-
   struct proc *new = alloc_thread_proc();
   if(!new)
     return -1;
@@ -601,19 +600,25 @@ int thread_create(void (*fcn)(void *), void *arg, void *stack) {
   new->sz = cur->sz;
   new->parent = cur;
 
-
   *new->tf = *cur->tf;
-
   new->tf->eax = 0;
   new->tf->eip = (uint)fcn;
-  new->tf->esp += KSTACKSIZE;
+  new->tf->esp = (uint)stack + KSTACKSIZE;
 
+  //arguments
   new->tf->esp -= sizeof(arg);
   *(uint *)new->tf->esp = (uint) arg;
 
+  //return address
   new->tf->esp -= sizeof(uint);
   *(uint *)new->tf->esp = 0xFFFFFFFF;
 
+  //EBP
+  /*
+  new->tf->esp -= sizeof(uint);
+  *(uint *)new->tf->esp = 0;
+  new->tf->ebp = new->tf->esp;
+  */
 
   int i;
   for(i = 0; i < NOFILE; i++)
